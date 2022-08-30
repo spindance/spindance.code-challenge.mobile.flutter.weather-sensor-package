@@ -1,3 +1,6 @@
 [submodule "android/libs"]
 	path = android/spindance.code-challenge.mobile.android.weather-sensor-service
 	url = https://github.com/spindance/spindance.code-challenge.mobile.android.weather-sensor-service/
+[submodule "ios/spindance.code-challenge.mobile.ios.weather-sensor-service-package"]
+	path = ios/spindance.code-challenge.mobile.ios.weather-sensor-service-package
+	url = https://github.com/spindance/spindance.code-challenge.mobile.ios.weather-sensor-service-package
