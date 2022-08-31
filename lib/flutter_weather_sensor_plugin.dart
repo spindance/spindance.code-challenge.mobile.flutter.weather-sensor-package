@@ -6,15 +6,6 @@ class FlutterWeatherSensorPlugin {
   static const MethodChannel _methodChannel = MethodChannel('flutter_weather_sensor_plugin');
   static const EventChannel _eventChannel = EventChannel('flutter_weather_sensor_plugin/readings');
 
-  static Future<String?> get platformVersion async {
-    try {
-      final String? version = await _methodChannel.invokeMethod('getPlatformVersion');
-      return version;
-    } on Exception catch (e) {
-      return '0.0';
-    }
-  }
-
   static Future<void> startSensorReadings() async {
     await _methodChannel.invokeMethod('startSensorReadings');
   }

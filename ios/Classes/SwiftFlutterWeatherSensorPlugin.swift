@@ -17,9 +17,7 @@ public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterSt
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    if (call.method == "getPlatformVersion") {
-      result("iOS " + UIDevice.current.systemVersion)
-    } else if (call.method == "startSensorReadings") {
+    if (call.method == "startSensorReadings") {
       startSensorReadings()
       result("success")
     } else if (call.method == "stopSensorReadings") {

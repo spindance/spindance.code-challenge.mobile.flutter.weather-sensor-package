@@ -35,9 +35,7 @@ class FlutterWeatherSensorPlugin : FlutterPlugin, MethodCallHandler, EventChanne
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else if (call.method == "startSensorReadings") {
+    if (call.method == "startSensorReadings") {
       startSensorReadings()
       result.success("success")
     } else if (call.method == "stopSensorReadings") {
