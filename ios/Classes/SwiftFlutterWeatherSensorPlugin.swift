@@ -4,7 +4,7 @@ import Combine
 
 @available(iOS 13.0, *)
 public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
-  private var eventSink: FlutterEventSink? = nil
+  private var eventSink: FlutterEventSink?
   private var sinkSubscription: AnyCancellable?
     
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -17,26 +17,26 @@ public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterSt
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    if (call.method == "startSensorReadings") {
-      startSensorReadings()
-      result("success")
-    } else if (call.method == "stopSensorReadings") {
-      stopSensorReadings()
-      result("success")
-    } else if (call.method == "set") {
-      if let args = call.arguments as? Dictionary<String, Any>,
-        let interval = args["readingInterval"] as? NSInteger {
-          setInterval(interval)
-        } else {
-          result(FlutterError.init(code:"invalidArgs", message: "Reading interval must be an integer.", details: "Expected 1 Int arg."))
-        }
-      result("success")
-    } else if (call.method == "collectReadings") {
-      collectReadings()
-      result("success")
-    } else {
-      result(FlutterMethodNotImplemented)
-      return
+    switch call.method {
+      case "startSensorReadings":
+        startSensorReadings()
+        result("success")
+      case "stopSensorReadings":
+        stopSensorReadings()
+        result("success")
+      case "set":
+        if let args = call.arguments as? Dictionary<String, Any>,
+          let interval = args["readingInterval"] as? UInt {
+            setInterval(interval)
+          } else {
+            result(FlutterError.init(code:"invalidArgs", message: "Reading interval must be a positive integer.", details: "Expected 1 UInt arg."))
+          }
+        result("success")
+      case "collectReadings":
+        collectReadings()
+        result("success")
+      default:
+        result(FlutterMethodNotImplemented)
     }
   }
     
@@ -51,15 +51,13 @@ public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterSt
   }
     
   private func collectReadings() {
-    sinkSubscription = WeatherSensorService.shared.reader.sensorReadingsPublisher.sink{ value in
-      if (self.eventSink != nil) {
-        self.eventSink!("\(value)")
-      }
+    sinkSubscription = WeatherSensorService.shared.reader.sensorReadingsPublisher.sink{ [weak self] value in
+      self?.eventSink?("\(value)")
     }
   }
     
-  private func setInterval(_ readingInterval: NSInteger) {
-    WeatherSensorService.shared.reader.set(readingInterval: UInt(readingInterval))
+  private func setInterval(_ readingInterval: UInt) {
+    WeatherSensorService.shared.reader.set(readingInterval: readingInterval)
   }
     
   private func startSensorReadings() {
@@ -67,10 +65,7 @@ public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterSt
   }
     
   private func stopSensorReadings() {
-    if (self.sinkSubscription != nil) {
-      self.sinkSubscription?.cancel()
-    }
+    sinkSubscription?.cancel()
     WeatherSensorService.shared.reader.startSensorReadings()
   }
-
 }

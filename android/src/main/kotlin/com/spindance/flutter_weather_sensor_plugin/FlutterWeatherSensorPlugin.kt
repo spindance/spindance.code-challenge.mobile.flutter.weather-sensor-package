@@ -35,20 +35,24 @@ class FlutterWeatherSensorPlugin : FlutterPlugin, MethodCallHandler, EventChanne
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "startSensorReadings") {
-      startSensorReadings()
-      result.success("success")
-    } else if (call.method == "stopSensorReadings") {
-      stopSensorReadings()
-      result.success("success")
-    } else if (call.method == "set") {
-      setInterval(call.argument("readingInterval") ?: 1)
-      result.success("success")
-    } else if (call.method == "collectReadings") {
-      collectReadings()
-      result.success("success")
-    } else {
-      result.notImplemented()
+    when (call.method) {
+      "startSensorReadings" -> {
+        startSensorReadings()
+        result.success("success")
+      }
+      "stopSensorReadings" -> {
+        stopSensorReadings()
+        result.success("success")
+      }
+      "set" -> {
+        setInterval(call.argument("readingInterval") ?: 1)
+        result.success("success")
+      }
+      "collectReadings" -> {
+        collectReadings()
+        result.success("success")
+      }
+      else -> result.notImplemented()
     }
   }
 
