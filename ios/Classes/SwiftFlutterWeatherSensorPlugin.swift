@@ -25,12 +25,14 @@ public class SwiftFlutterWeatherSensorPlugin: NSObject, FlutterPlugin, FlutterSt
         stopSensorReadings()
         result("success")
       case "set":
-        if let args = call.arguments as? Dictionary<String, Any>,
-          let interval = args["readingInterval"] as? UInt {
-            setInterval(interval)
-          } else {
-            result(FlutterError.init(code:"invalidArgs", message: "Reading interval must be a positive integer.", details: "Expected 1 UInt arg."))
-          }
+        guard
+          let args = call.arguments as? Dictionary<String, Any>,
+          let interval = args["readingInterval"] as? UInt
+        else {
+          result(FlutterError.init(code:"invalidArgs", message: "Reading interval must be a positive integer.", details: "Expected 1 UInt arg."))
+          return
+        }
+        setInterval(interval)
         result("success")
       case "collectReadings":
         collectReadings()
